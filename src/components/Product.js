@@ -1,4 +1,4 @@
-  import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -38,7 +38,7 @@ function Breadcrumb() {
 //         productName: 'LS 18',
 //         productPrice: 87715000,
 //         slug: 'Nexo-LS-18'
-    
+
 //     }, {
 //         id: 3,
 //         productImage: 'https://nguyenkeo.github.io/MasterAudio/img/adamson/adamson-point15.jpg',
@@ -55,41 +55,83 @@ function Breadcrumb() {
 //         slug: 'Amate-X218WF',
 //     },
 
-
 // ];
 
 export function Product() {
-    const [ stateProducts,  setProducts ] = useState( [] )
+  // Lấy tất cả các sp để .map()
+  const [stateProducts, setProducts] = useState([]);
+  const [stateInputValue, setStateInputValue] = useState("");
 
-    useEffect( () => {
-        fetch( 'https://rest-api-nodejs-reactjs-router.herokuapp.com/products' ).then( 
-          (response) => {  console.log( 'response', response);
-           
-            return response.json();
-          })
-            
-          .then( ( products )  => {
-            setProducts( products ) 
-          })
-    }, []); 
+  useEffect(() => {
+    // -- Promise
+    // fetch("https://rest-api-nodejs-reactjs-router.herokuapp.com/products")
+    //   .then((response) => {
+    //     console.log("response", response);
+    //     return response.json();
+    //   })
+    //   .then((products) => {
+    //     setProducts(products);
+    //   });
+
+    // Async await
+    async function fetchData() {
+      const response = await fetch(
+        "https://rest-api-nodejs-reactjs-router.herokuapp.com/products"
+      );
+      const result = await response.json();
+      setProducts(result);
+    }
+    fetchData();
+
+    // Anonymous function
+    // (
+    //   async function fetchData() {
+    //     const response = await fetch(
+    //       "https://rest-api-nodejs-reactjs-router.herokuapp.com/products"
+    //     );
+    //     const result = await response.json();
+    //     setProducts(result);
+    //   }
+    // ) ()
+  }, []);
+
+  // Lấy giá trị ô input
+  function inputSearchValue(event) { console.log('Giá trị ô input: ', stateInputValue)
+    setStateInputValue(event.target.value);
+  }
+  // Chức năng Seacrch
+  function searchProduct() {
+
+    async function fetchData() {
+      const response = await fetch(
+        `https://rest-api-nodejs-reactjs-router.herokuapp.com/products/?productName=${ stateProducts.productName }  `
+      );
+      const result = await response.json();
+      setProducts(result);
+      console.log('Tìm 1/nhiều product, stateProducts', stateProducts)
+    }
+    fetchData();
+
+  }
 
   let ProductDetailElement = stateProducts.map((item) => (
-
-    <div key= { item.id }  className="product">
-        
+    <div key={item.id} className="product">
       {/* (item.productName).split(' ').join('') */}
-      <Link to= {`/product-detail/${ item.slug }/${ item.id }`} >
+
+      <Link to={`/product-detail/${item.slug}/${item.id}`}>
         <div className="product-img">
-          <img src= { item.productImage }   alt="product"  />
+          <img src={item.productImage} alt="product" />
         </div>
       </Link>
 
       <div className="product-details">
-          
         <div className="product-infor     ">
-          <div className="product-infor-brand"> { item.productBrand } </div>
-          <div className="product-infor-name-product">{ item.productName }</div>
-          <div className="product-infor-price"> { (item.productPrice).toLocaleString() }&nbsp;VNĐ</div>
+          <div className="product-infor-brand"> {item.productBrand} </div>
+          <div className="product-infor-name-product">{item.productName}</div>
+          <div className="product-infor-price">
+            {" "}
+            {item.productPrice.toLocaleString()}&nbsp;₫
+          </div>
           &nbsp;
           <i className="far fa-heart  like-product " />
         </div>
@@ -99,17 +141,16 @@ export function Product() {
             <i className="fas fa-cart-arrow-down" /> Thêm vào giỏ hàng
           </span>
 
-          <Link to="/shoppingCart"
-            className=" product-details-button-buynow " type="button" >
-
-            <i className="fas fa-coins" />  &nbsp;Mua ngay
+          <Link
+            to="/shoppingCart"
+            className=" product-details-button-buynow "
+            type="button"
+          >
+            <i className="fas fa-coins" /> &nbsp;Mua ngay
           </Link>
-          
         </div>
-
       </div>
     </div>
-
   ));
   return (
     <>
@@ -244,13 +285,13 @@ export function Product() {
               </div>
               <span>
                 <span className="product-search">
-                  <input
+                  <input onChange = { inputSearchValue }
                     className="search-input"
                     type="text"
                     placeholder="Tìm kiếm sản phẩm"
                   />
-                  <span className="search-icon" type="button">
-                    {" "}
+                  <span onClick = { searchProduct }
+                    className="search-icon" type="button">
                     <i className="fas fa-search "> </i>
                   </span>
                 </span>
@@ -262,10 +303,9 @@ export function Product() {
         </section>{" "}
         {/* Lọc sản phẩm */}
         <section className="products-pagination-container    container">
-            
           <div className="list-products">
             {/* 1 */}
-            { ProductDetailElement }
+            {ProductDetailElement}
           </div>
 
           {/* list-products */}
