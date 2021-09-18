@@ -60,7 +60,7 @@ function Breadcrumb() {
 export function Product() {
   // Lấy tất cả các sp để .map()
   const [stateProducts, setProducts] = useState([]);
-  const [stateInputValue, setStateInputValue] = useState("");
+  const [stateInputValue, setStateInputValue] = useState(""); // biến đổi thêm đầu vào?
 
   useEffect(() => {
     // -- Promise
@@ -76,10 +76,11 @@ export function Product() {
     // Async await
     async function fetchData() {
       const response = await fetch(
-        "https://rest-api-nodejs-reactjs-router.herokuapp.com/products"
+        `https://rest-api-nodejs-reactjs-router.herokuapp.com/products`
       );
       const result = await response.json();
       setProducts(result);
+      console.log("result", result, 'stateProducts' ,stateProducts );
     }
     fetchData();
 
@@ -99,22 +100,79 @@ export function Product() {
   function inputSearchValue(event) { console.log('Giá trị ô input: ', stateInputValue)
     setStateInputValue(event.target.value);
   }
-  // Chức năng Seacrch
+  // Chức năng Search
   function searchProduct() {
 
-    async function fetchData() {
+    async function searchData() {
       const response = await fetch(
-        `https://rest-api-nodejs-reactjs-router.herokuapp.com/products/?productName=${ stateProducts.productName }  `
+        `https://rest-api-nodejs-reactjs-router.herokuapp.com/products/?q=${stateInputValue}  `
       );
       const result = await response.json();
       setProducts(result);
       console.log('Tìm 1/nhiều product, stateProducts', stateProducts)
     }
-    fetchData();
+    searchData();
 
   }
+  // Chức năng Filter  
+  // function FilterProduct() {
+  //   async function fetchData() {
+  //     const response = await fetch(
+  //       `https://rest-api-nodejs-reactjs-router.herokuapp.com/products/?id=${ stateProducts.id }  `
+  //     );
+  //     const result = await response.json();
+  //     setProducts(result);
+  //     console.log('Tìm 1/nhiều product, stateProducts', stateProducts)
+  //   }
+  //   fetchData();
 
-  let ProductDetailElement = stateProducts.map((item) => (
+  // }
+  
+  // Lọc theo thương hiệu
+  function filterByBrand(brand) { 
+    async function filterBrand() {
+      const response = await fetch (  `https://rest-api-nodejs-reactjs-router.herokuapp.com/products?q=${brand} ` )
+      const result = await response.json();
+      setProducts(result);
+    };
+    filterBrand()
+  }
+  // Lọc theo loại sản phẩm - type
+  function filterByType(brand) { 
+    async function filterType() {
+      const response = await fetch (  `https://rest-api-nodejs-reactjs-router.herokuapp.com/products?q=${brand} ` )
+      const result = await response.json();
+      setProducts(result);
+    };
+    filterType()
+  }
+
+  // Lọc theo khoảng giá nhập vào
+  // https://rest-api-nodejs-reactjs-router.herokuapp.com/products?productPrice_gte=16500000&productPrice_lte=65200000
+
+  // Xắp xếp giá tăng dần
+  function sortPriceAscending() { console.log('Sắp xếp tăng dần')
+    async function sortPrice() {
+      const response = await fetch( ` https://rest-api-nodejs-reactjs-router.herokuapp.com/products?_sort=productPrice&_order=asc  ` )
+      const result = await response.json();
+      setProducts(result);
+    }
+    sortPrice();
+  }
+  // Xắp xếp giá giảm dần
+  function sortPriceDecrease() { console.log('Sắp xếp giảm dần')
+    async function sortPrice() {
+      const response = await fetch( ` https://rest-api-nodejs-reactjs-router.herokuapp.com/products?_sort=productPrice&_order=desc ` )
+      const result = await response.json();
+      setProducts(result);
+    }
+    sortPrice();
+  }
+  // Phân Trang
+  // https://rest-api-nodejs-reactjs-router.herokuapp.com/products?_page=1&_limit=4
+  
+
+  let ProductDetailElement = stateProducts.map((item) => ( 
     <div key={item.id} className="product">
       {/* (item.productName).split(' ').join('') */}
 
@@ -169,55 +227,55 @@ export function Product() {
                 <div className="list-brand">
                   {/* Div được gắn Carousel */}
                   {/* <div class="list-brand-carousel"> */}
-                  <div className="brand-logo">
+                  <div onClick={ () => filterByBrand( '4-acoustic' ) } className="brand-logo">
                     <img
                       src="https://nguyenkeo.github.io/MasterAudio/img/Brands/brand-logo/logo-4-acoustic.png"
                       alt="logo"
                     />
                   </div>
-                  <div className="brand-logo">
+                  <div onClick={ () => filterByBrand( 'Nexo' ) } className="brand-logo">
                     <img
                       src="https://nguyenkeo.github.io/MasterAudio/img/Brands/brand-logo/Nexo.png"
                       alt="logo"
                     />
                   </div>
-                  <div className="brand-logo">
+                  <div onClick={ () => filterByBrand( 'Adamson' ) } className="brand-logo">
                     <img
                       src="https://nguyenkeo.github.io/MasterAudio/img/Brands/brand-logo/logo-Adamson.png"
                       alt="logo"
                     />
                   </div>
-                  <div className="brand-logo">
+                  <div onClick={ () => filterByBrand( 'Amate' ) } className="brand-logo">
                     <img
                       src="https://nguyenkeo.github.io/MasterAudio/img/Brands/brand-logo/logo-Amate.png"
                       alt="logo"
                     />
                   </div>
-                  <div className="brand-logo">
+                  <div onClick={ () => filterByBrand( 'Kuledy' ) } className="brand-logo">
                     <img
                       src="https://nguyenkeo.github.io/MasterAudio/img/Brands/brand-logo/logo-Kuledy.png"
                       alt="logo"
                     />
                   </div>
-                  <div className="brand-logo">
+                  <div onClick={ () => filterByBrand( 'DK' ) } className="brand-logo">
                     <img
                       src="https://nguyenkeo.github.io/MasterAudio/img/Brands/brand-logo/logo-DK.png"
                       alt="logo"
                     />
                   </div>
-                  <div className="brand-logo">
+                  <div onClick={ () => filterByBrand( 'Baiervires' ) } className="brand-logo">
                     <img
                       src="https://nguyenkeo.github.io/MasterAudio/img/Brands/brand-logo/logo-Baiervires.png"
                       alt="logo"
                     />
                   </div>
-                  <div className="brand-logo">
+                  <div onClick={ () => filterByBrand( 'Hous' ) } className="brand-logo">
                     <img
                       src="https://nguyenkeo.github.io/MasterAudio/img/Brands/brand-logo/logo-Hours.png"
                       alt="logo"
                     />
                   </div>
-                  <div className="brand-logo">
+                  <div onClick={ () => filterByBrand( 'Pioneer-dj' ) } className="brand-logo">
                     <img
                       src="https://nguyenkeo.github.io/MasterAudio/img/Brands/brand-logo/Pioneer-dj.png"
                       alt="logo"
@@ -235,39 +293,39 @@ export function Product() {
                 <div className="list-classify">
                   {/* Div được gắn Carousel */}
                   {/* <div class="list-brand-carousel"> */}
-                  <div className="brand-classify">
+                  <div onClick={ () => filterByType('Subwoofer') } className="brand-classify">
                     {" "}
                     <span> Subwoofer </span>{" "}
                   </div>
-                  <div className="brand-classify">
+                  <div onClick={ () => filterByType('Full range') } className="brand-classify">
                     {" "}
                     <span> Full range </span>{" "}
                   </div>
-                  <div className="brand-classify">
+                  <div onClick={ () => filterByType('Line array') } className="brand-classify">
                     {" "}
                     <span> Line array </span>{" "}
                   </div>
-                  <div className="brand-classify">
+                  <div onClick={ () => filterByType('Mid low') } className="brand-classify">
                     {" "}
                     <span> Mid low </span>{" "}
                   </div>
-                  <div className="brand-classify">
+                  <div onClick={ () => filterByType('Amplifier') } className="brand-classify">
                     {" "}
                     <span> Amplifier </span>{" "}
                   </div>
-                  <div className="brand-classify">
+                  <div onClick={ () => filterByType('Micro') } className="brand-classify">
                     {" "}
                     <span> Micro </span>{" "}
                   </div>
-                  <div className="brand-classify">
+                  <div onClick={ () => filterByType('Digital echo') } className="brand-classify">
                     {" "}
                     <span> Digital echo </span>{" "}
                   </div>
-                  <div className="brand-classify">
+                  <div onClick={ () => filterByType('Mixer') } className="brand-classify">
                     {" "}
                     <span> Mixer </span>{" "}
                   </div>
-                  <div className="brand-classify">
+                  <div onClick={ () => filterByType('Auto power') } className="brand-classify">
                     {" "}
                     <span> Auto power </span>{" "}
                   </div>
@@ -280,8 +338,10 @@ export function Product() {
             {/* Lọc theo giá và tìm kiếm */}
             <div className="filter-by-price-search-container   container  ">
               <div className="filter-by-price-buttons">
-                <span className="filter-by-price-button">Giá tăng dần</span>
-                <span className="filter-by-price-button">Giá giảm dần</span>
+
+                <span onClick={ sortPriceAscending } className="filter-by-price-button">Giá tăng dần</span>
+                <span onClick={ sortPriceDecrease } className="filter-by-price-button">Giá giảm dần</span>
+                
               </div>
               <span>
                 <span className="product-search">
@@ -305,7 +365,8 @@ export function Product() {
         <section className="products-pagination-container    container">
           <div className="list-products">
             {/* 1 */}
-            {ProductDetailElement}
+            { stateProducts.length > 0 ? (ProductDetailElement) : 'Không có sản phẩm nào' }
+            {/* { stateProducts } */}
           </div>
 
           {/* list-products */}
